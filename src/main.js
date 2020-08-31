@@ -35,7 +35,24 @@ function parse(buffer) {
         line = lines.shift();
         if (line) {
             line = line.split(':');
-            headers[line[0]] = line[1];
+            if (headers[line[0]]) {
+                if (typeof (headers[line[0]]) === "string") {
+                    let oldHeader = headers[line[0]];
+                    headers[line[0]] = [];
+                    headers[line[0]].push(oldHeader);
+                }
+                if (line.length > 2) {
+                    headers[line[0]].push(line.splice(1).join(':'));
+                } else {
+                    headers[line[0]].push(line[1]);
+                }
+            } else {
+                if (line.length > 2) {
+                    headers[line[0]] = line.splice(1).join(':');
+                } else {
+                    headers[line[0]] = line[1];
+                }
+            }
         }
         else {
             break;
